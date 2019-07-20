@@ -4,7 +4,7 @@
 # Path to gcc
 GCC_PATH = /usr/bin/
 # Path to st-flash tool
-FLASH_PATH = st-flash
+FLASH_PATH = /usr/local/bin/st-flash
 
 ########################################################
 # target
