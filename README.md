@@ -1,4 +1,4 @@
-# stm32f0_discovery_cpp
+# STM32F0 Discovery C++
 
 I basically followed this great Tutorial https://www.instructables.com/id/Build-a-Program-for-STM32-MCU-Under-Linux/
 and setup a Project which is only compiled by running "make" in the root folder. In the process I used STM32CubeMX and Makefile4CubeMX.
