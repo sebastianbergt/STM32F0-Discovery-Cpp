@@ -23,10 +23,10 @@
 #include "stdlib.h"
 #include "inttypes.h"
 #include "string.h"
+#include "test.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -116,6 +116,8 @@ int main(void)
     float adc_voltage = adc_raw * (3.0f / 0xFFF); // 3.0V / 12 bit
     float current = (adc_voltage - 1.5) * 0.110; // 110mV / A
     char buf[10];
+    Universe u;
+    current = u.giveMeTheAnswer();
     itoa(current * 1000, buf, 10);
     strcat(buf,"\n");
     HAL_UART_Transmit(&huart1, (uint8_t*) buf, strlen(buf), 10);    

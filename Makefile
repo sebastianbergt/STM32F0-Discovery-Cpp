@@ -46,11 +46,13 @@ C_SOURCES = \
   Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim_ex.c \
   Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_uart.c \
   Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_uart_ex.c \
-  Src/main.c \
   Src/stm32f0xx_hal_msp.c \
   Src/stm32f0xx_it.c \
   Src/system_stm32f0xx.c \
-  Src/syscalls.c  
+  Src/syscalls.c
+CPP_SOURCES = \
+  Src/main.cpp \
+  Src/test.cpp
 ASM_SOURCES = \
   SW4STM32/startup_stm32f051x8.s
 
@@ -58,8 +60,8 @@ ASM_SOURCES = \
 # binaries
 #######################################
 PREFIX  = $(GCC_PATH)arm-none-eabi-
-CC = $(PREFIX)gcc
-AS = $(PREFIX)gcc -x assembler-with-cpp
+CC = $(PREFIX)g++
+AS = $(PREFIX)g++ -x assembler-with-cpp
 CP = $(PREFIX)objcopy
 AR = $(PREFIX)ar
 SZ = $(PREFIX)size
@@ -82,7 +84,7 @@ C_INCLUDES += -IDrivers/CMSIS/Include
 # compile gcc flags
 WFLAGS = -Wall -fdata-sections -ffunction-sections -fmessage-length=0 -c
 ASFLAGS = -mthumb -mcpu=cortex-m0 $(AS_DEFS) $(AS_INCLUDES) $(OPT) $(WFLAGS)
-CFLAGS = -mthumb -mcpu=cortex-m0 -fno-aggressive-loop-optimizations $(C_DEFS) $(C_INCLUDES) $(OPT) $(WFLAGS)
+CFLAGS = -std=gnu++17 -mthumb -mcpu=cortex-m0 -fno-aggressive-loop-optimizations $(C_DEFS) $(C_INCLUDES) $(OPT) $(WFLAGS)
 # Generate dependency information
 CFLAGS += -MD -MP -MF .dep/$(@F).d
 
@@ -112,9 +114,15 @@ all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET
 # list of objects
 OBJECTS = $(addprefix $(BUILD_DIR)/,$(notdir $(C_SOURCES:.c=.o)))
 vpath %.c $(sort $(dir $(C_SOURCES)))
+OBJECTS += $(addprefix $(BUILD_DIR)/,$(notdir $(CPP_SOURCES:.cpp=.o)))
+vpath %.cpp $(sort $(dir $(CPP_SOURCES)))
 # list of ASM program objects
 OBJECTS += $(addprefix $(BUILD_DIR)/,$(notdir $(ASM_SOURCES:.s=.o)))
 vpath %.s $(sort $(dir $(ASM_SOURCES)))
+
+$(BUILD_DIR)/%.o: %.cpp Makefile | $(BUILD_DIR) 
+	@echo "C++. Compiling $@..."
+	@$(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.cpp=.lst)) $< -o $@
 
 $(BUILD_DIR)/%.o: %.c Makefile | $(BUILD_DIR) 
 	@echo "C. Compiling $@..."
