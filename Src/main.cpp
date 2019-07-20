@@ -24,6 +24,7 @@
 #include "inttypes.h"
 #include "string.h"
 #include "test.h"
+#include <vector>
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -116,11 +117,19 @@ int main(void)
     float adc_voltage = adc_raw * (3.0f / 0xFFF); // 3.0V / 12 bit
     float current = (adc_voltage - 1.5) * 0.110; // 110mV / A
     char buf[10];
-    Universe u;
-    current = u.giveMeTheAnswer();
-    itoa(current * 1000, buf, 10);
-    strcat(buf,"\n");
-    HAL_UART_Transmit(&huart1, (uint8_t*) buf, strlen(buf), 10);    
+    std::vector<float> v;
+    v.push_back(1.0);
+    v.push_back(2.0);
+    v.push_back(3.0);
+
+    auto myLamdba = [](const auto x, auto y){ return x + y; };
+    v.push_back( myLamdba(2.0f, 2.0f) );
+    for (auto &number : v) {
+      itoa(number * 10, buf, 10);
+      strcat(buf,"\n");
+      HAL_UART_Transmit(&huart1, (uint8_t*) buf, strlen(buf), 10);
+    }
+        
     
     /* USER CODE BEGIN 3 */
   }
