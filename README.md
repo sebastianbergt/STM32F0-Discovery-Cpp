@@ -1,7 +1,7 @@
 # stm32f0_discovery_cpp
 
 I basically followed this great Tutorial https://www.instructables.com/id/Build-a-Program-for-STM32-MCU-Under-Linux/
-and setup a Project which is only compiled by running "make". In the process I used STM32CubeMX and Makefile4CubeMX.
+and setup a Project which is only compiled by running "make" in the root folder. In the process I used STM32CubeMX and Makefile4CubeMX.
 As I love Visual Studio Code, I did not setup CodeBlocks IDE.
 
 I changed main.c to main.cpp to call a sample class and had to change the Makefile to support C++.
